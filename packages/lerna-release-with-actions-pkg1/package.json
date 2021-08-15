@@ -1,0 +1,29 @@
+{
+  "name": "@izumin5210-sandbox/lerna-release-with-actions-pkg1",
+  "version": "0.0.1",
+  "description": "Test package",
+  "author": "izumin5210 <m@izum.in>",
+  "homepage": "https://github.com/izumin5210-sandbox/lerna-release-with-actions/tree/master/packages/lerna-release-with-actions-pkg1",
+  "license": "MIT",
+  "main": "lib/lerna-release-with-actions-pkg1.js",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/izumin5210-sandbox/lerna-release-with-actions.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "bugs": {
+    "url": "https://github.com/izumin5210-sandbox/lerna-release-with-actions/issues"
+  }
+}
