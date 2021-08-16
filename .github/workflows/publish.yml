@@ -9,11 +9,12 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  packages: write
 
 jobs:
   publish:
-    name: Publish
     if: github.event.pull_request.merged == true && startWith(github.event.pull_request.head.ref, "releases/")
+    runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
@@ -37,7 +38,7 @@ jobs:
         echo "RELEASE_NOTE=$(yarn -s lerna-changelog --next-version-from-metadata)" >> $GITHUB_ENV
 
     - name: Update CHANGELOG.md
-      runs: |
+      run: |
         mkdir -p tmp
         echo $RELEASE_NOTE > tmp/CHANGELOG.head.md
         git show ${{ github.base_ref }}:./CHANGELOG.md > tmp/CHANGELOG.base.md
@@ -48,7 +49,7 @@ jobs:
         git push
 
     - name: Create git tag
-      runs: |
+      run: |
         git tag $RELEASE_TAG
         git push --tags
 
