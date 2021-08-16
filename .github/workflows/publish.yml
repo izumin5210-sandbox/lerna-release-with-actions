@@ -19,9 +19,12 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
     - uses: actions/setup-node@v1
       with:
         node-version: 14.x
+    - run: yarn --frozen-lockfile
 
     - name: Setup git
       run: |
@@ -31,12 +34,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Set release metas to env
-      run: |
-        version=$(node --print 'require("./lerna.json").version')
-        echo "RELEASE_VERSION=${version}" >> $GITHUB_ENV
-        echo "RELEASE_TAG=v${version}" >> $GITHUB_ENV
-        echo "RELEASE_NOTE=$(yarn -s lerna-changelog --next-version-from-metadata)" >> $GITHUB_ENV
+    - uses: ./.github/actions/release-meta
+      id: release-meta
 
     - name: Update CHANGELOG.md
       run: |
@@ -48,11 +47,15 @@ jobs:
         git add CHANGELOG.md
         git commit -m "Update CHANGELOG for ${yarn -s print-version}"
         git push
+      env:
+        RELEASE_NOTE: ${{ steps.release-meta.outputs.note }}
 
     - name: Create git tag
       run: |
         git tag $RELEASE_TAG
         git push --tags
+      env:
+        RELEASE_TAG: ${{ steps.release-meta.outputs.tag }}
 
     - name: Create GitHub Release
       uses: actions/github-script@v4
@@ -67,6 +70,9 @@ jobs:
             prerelease: /v\d+\.\d+\.\d+-.+/.test(process.env.RELEASE_TAG),
           })
         github-token: ${{ secrets.GITHUB_TOKEN }}
+      env:
+        RELEASE_NOTE: ${{ steps.release-meta.outputs.note }}
+        RELEASE_TAG: ${{ steps.release-meta.outputs.tag }}
 
     - name: Publish to npm
       run: |
@@ -85,3 +91,5 @@ jobs:
             body: `https://github.com/${context.repo.owner}/${context.repo.repo}/releases/tag/${process.env.RELEASE_TAG} is released 🚀`,
           })
         github-token: ${{ secrets.GITHUB_TOKEN }}
+      env:
+        RELEASE_TAG: ${{ steps.release-meta.outputs.tag }}

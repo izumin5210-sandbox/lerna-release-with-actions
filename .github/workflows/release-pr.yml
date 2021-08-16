@@ -21,19 +21,10 @@ jobs:
       with:
         node-version: 14.x
     - run: yarn --frozen-lockfile
-    - name: Generate Release note
-      run: |
-        version=$(node --print 'require("./lerna.json").version')
-        echo $version
-        yarn -s lerna-changelog --next-version-from-metadata
-        note=$(yarn -s lerna-changelog --next-version-from-metadata)
-        echo $note
-        echo "::set-output name=version::${version}"
-        echo "::set-output name=tag::v${version}"
-        echo "::set-output name=note::${note//$'\n'/\\n}"
-      env:
-        GITHUB_AUTH: ${{ secrets.GITHUB_TOKEN }}
+
+    - uses: ./.github/actions/release-meta
       id: release-meta
+
     - name: Update PR body
       uses: actions/github-script@v4
       with:

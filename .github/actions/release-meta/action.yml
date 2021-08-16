@@ -1,0 +1,34 @@
+name: release-meta
+description: Output release metadata
+inputs:
+  github-token:
+    description: 'GitHub Access Token for downloading kube'
+    default: ${{ github.token }}
+    required: true
+outputs:
+  version:
+    description: 'Release version'
+    value: ${{ steps.meta.outputs.version }}
+  tag:
+    description: 'Release git tag'
+    value: ${{ steps.meta.outputs.tag }}
+  note:
+    description: 'Release note'
+    value: ${{ steps.meta.outputs.note }}
+runs:
+  using: "composite"
+  steps:
+    - id: meta
+      shell: bash
+      run: |
+        version=$(node --print 'require("./lerna.json").version')
+        note=$(yarn -s lerna-changelog --next-version-from-metadata)
+
+        echo "::set-output name=version::${version}"
+        echo "::set-output name=tag::v${version}"
+        echo "::set-output name=note::${note//$'\n'/\\n}"
+
+        echo $version
+        echo $note
+      env:
+        GITHUB_AUTH: ${{ inputs.github-token }}
