@@ -4,7 +4,6 @@ on:
   pull_request:
     branches:
     - 'releases/**'
-    types: [opened, synchronize]
 
 permissions:
   contents: read
