@@ -2,8 +2,7 @@ name: Release PR
 
 on:
   pull_request:
-    branches:
-    - 'releases/**'
+    branches: [main]
 
 permissions:
   contents: read
@@ -11,6 +10,7 @@ permissions:
 
 jobs:
   release-note:
+    if: startswith(github.head_ref, 'releases/')
     runs-on: ubuntu-latest
 
     steps:
