@@ -19,14 +19,16 @@ jobs:
       with:
         node-version: 14.x
     - run: yarn --frozen-lockfile
-    - name: Generate CHANGELOG
+    - name: Generate Release note
       run: |
         version=$(node --print 'require("./lerna.json").version')
-        echo "RELEASE_VERSION=${version}" >> $GITHUB_ENV
-        echo "RELEASE_TAG=v${version}" >> $GITHUB_ENV
-        echo "RELEASE_NOTE=$(yarn -s lerna-changelog --next-version-from-metadata)" >> $GITHUB_ENV
+        note=$(yarn -s lerna-changelog --next-version-from-metadata)
+        echo "::set-output name=version::${version}"
+        echo "::set-output name=tag::v${version}"
+        echo "::set-output name=note::${note//$'\n'/\\n}"
       env:
         GITHUB_AUTH: ${{ secrets.GITHUB_TOKEN }}
+      id: release-meta
     - name: Update PR body
       uses: actions/github-script@v4
       with:
@@ -35,6 +37,9 @@ jobs:
             owner: context.repo.owner,
             repo: context.repo.repo,
             pull_number: context.issue.number,
-            title: process.env.TAG,
+            title: process.env.RELEASE_TAG,
             body: process.env.RELEASE_NOTE,
           })
+      env:
+        RELEASE_NOTE: ${{ steps.release-meta.outputs.note }}
+        RELEASE_TAG: ${{ steps.release-meta.outputs.tag }}
