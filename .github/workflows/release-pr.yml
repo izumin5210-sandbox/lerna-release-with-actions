@@ -15,15 +15,13 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
     - uses: actions/setup-node@v1
       with:
         node-version: 14.x
     - run: yarn --frozen-lockfile
     - name: Generate Release note
       run: |
-        git fetch --force --tags
+        git fetch --unshallow
         version=$(node --print 'require("./lerna.json").version')
         echo $version
         yarn -s lerna-changelog --next-version-from-metadata
