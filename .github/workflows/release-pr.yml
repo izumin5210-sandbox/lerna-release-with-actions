@@ -23,6 +23,7 @@ jobs:
     - run: yarn --frozen-lockfile
     - name: Generate Release note
       run: |
+        git fetch --force --tags
         version=$(node --print 'require("./lerna.json").version')
         echo $version
         yarn -s lerna-changelog --next-version-from-metadata
