@@ -1,0 +1,85 @@
+name: Publish
+
+on:
+  pull_request:
+    branches:
+    - main
+    types: [closed]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  publish:
+    name: Publish
+    if: github.event.pull_request.merged == true && startWith(github.event.pull_request.head.ref, "releases/")
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v1
+      with:
+        node-version: 14.x
+
+    - name: Setup git
+      run: |
+        git config --global user.name 'github-actions[bot]'
+        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+        git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Set release metas to env
+      run: |
+        version=$(node --print 'require("./lerna.json").version')
+        echo "RELEASE_VERSION=${version}" >> $GITHUB_ENV
+        echo "RELEASE_TAG=v${version}" >> $GITHUB_ENV
+        echo "RELEASE_NOTE=$(yarn -s lerna-changelog --next-version-from-metadata)" >> $GITHUB_ENV
+
+    - name: Update CHANGELOG.md
+      runs: |
+        mkdir -p tmp
+        echo $RELEASE_NOTE > tmp/CHANGELOG.head.md
+        git show ${{ github.base_ref }}:./CHANGELOG.md > tmp/CHANGELOG.base.md
+        cat -s tmp/CHANGELOG.head.md tmp/CHANGELOG.base.md > CHANGELOG.md
+
+        git add CHANGELOG.md
+        git commit -m "Update CHANGELOG for ${yarn -s print-version}"
+        git push
+
+    - name: Create git tag
+      runs: |
+        git tag $RELEASE_TAG
+        git push --tags
+
+    - name: Create GitHub Release
+      uses: actions/github-script@v4
+      with:
+        script: |
+          github.repos.createRelease({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            name: process.env.RELEASE_TAG,
+            tag_name: process.env.RELEASE_TAG,
+            body: process.env.RELEASE_NOTE,
+            prerelease: /v\d+\.\d+\.\d+-.+/.test(process.env.RELEASE_TAG),
+          })
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Publish to npm
+      run: |
+        yarn lerna publish from-package --yes
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Comment to PR
+      uses: actions/github-script@v4
+      with:
+        script: |
+          github.issues.createCommit({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number: context.issue.number,
+            body: `https://github.com/${context.repo.owner}/${context.repo.repo}/releases/tag/${process.env.RELEASE_TAG} is released 🚀`,
+          })
+        github-token: ${{ secrets.GITHUB_TOKEN }}
