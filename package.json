@@ -2,8 +2,11 @@
   "name": "lerna-release-with-actions",
   "private": true,
   "version": "0.0.0",
-  "workspaces": ["packages/*"],
+  "workspaces": [
+    "packages/*"
+  ],
   "devDependencies": {
-    "lerna": "^4.0.0"
+    "lerna": "^4.0.0",
+    "lerna-changelog": "^2.1.0"
   }
 }
