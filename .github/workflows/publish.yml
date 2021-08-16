@@ -45,9 +45,10 @@ jobs:
         cat -s tmp/CHANGELOG.head.md tmp/CHANGELOG.base.md > CHANGELOG.md
 
         git add CHANGELOG.md
-        git commit -m "Update CHANGELOG for ${yarn -s print-version}"
+        git commit -m "Update CHANGELOG for ${RELEASE_TAG}"
         git push
       env:
+        RELEASE_TAG: ${{ steps.release-meta.outputs.tag }}
         RELEASE_NOTE: ${{ steps.release-meta.outputs.note }}
 
     - name: Create git tag
@@ -69,7 +70,6 @@ jobs:
             body: process.env.RELEASE_NOTE,
             prerelease: /v\d+\.\d+\.\d+-.+/.test(process.env.RELEASE_TAG),
           })
-        github-token: ${{ secrets.GITHUB_TOKEN }}
       env:
         RELEASE_NOTE: ${{ steps.release-meta.outputs.note }}
         RELEASE_TAG: ${{ steps.release-meta.outputs.tag }}
@@ -90,6 +90,5 @@ jobs:
             issue_number: context.issue.number,
             body: `https://github.com/${context.repo.owner}/${context.repo.repo}/releases/tag/${process.env.RELEASE_TAG} is released 🚀`,
           })
-        github-token: ${{ secrets.GITHUB_TOKEN }}
       env:
         RELEASE_TAG: ${{ steps.release-meta.outputs.tag }}
