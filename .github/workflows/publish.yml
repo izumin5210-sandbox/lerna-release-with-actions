@@ -41,6 +41,7 @@ jobs:
       run: |
         mkdir -p tmp
         echo $RELEASE_NOTE
+        echo ${RELEASE_NOTE//\\\\/\\}
         echo ${RELEASE_NOTE//\\\\/\\} > tmp/CHANGELOG.head.md
         git show ${{ github.base_ref }}:./CHANGELOG.md > tmp/CHANGELOG.base.md
         cat -s tmp/CHANGELOG.head.md tmp/CHANGELOG.base.md > CHANGELOG.md
