@@ -40,7 +40,7 @@ jobs:
     - name: Update CHANGELOG.md
       run: |
         mkdir -p tmp
-        echo $RELEASE_NOTE > tmp/CHANGELOG.head.md
+        echo ${RELEASE_NOTE//\\\\/\\} > tmp/CHANGELOG.head.md
         git show ${{ github.base_ref }}:./CHANGELOG.md > tmp/CHANGELOG.base.md
         cat -s tmp/CHANGELOG.head.md tmp/CHANGELOG.base.md > CHANGELOG.md
 
@@ -67,7 +67,7 @@ jobs:
             repo: context.repo.repo,
             name: process.env.RELEASE_TAG,
             tag_name: process.env.RELEASE_TAG,
-            body: process.env.RELEASE_NOTE,
+            body: process.env.RELEASE_NOTE.replace(/\\n/g, '\n'),
             prerelease: /v\d+\.\d+\.\d+-.+/.test(process.env.RELEASE_TAG),
           })
       env:
