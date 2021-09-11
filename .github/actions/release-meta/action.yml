@@ -22,7 +22,7 @@ runs:
       shell: bash
       run: |
         version=$(node --print 'require("./lerna.json").version')
-        note=$(yarn -s lerna-changelog --next-version ${version})
+        note=$(yarn -s lerna-changelog --from v0.1.3 --to v0.1.4)
         echo $version
         echo $note
 
