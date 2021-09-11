@@ -1,0 +1,32 @@
+name: Test
+
+on: [push]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - uses: actions/setup-node@v1
+      with:
+        node-version: 14.x
+    - run: yarn --frozen-lockfile
+
+    - uses: ./.github/actions/release-meta
+      id: release-meta
+
+    - name: Update CHANGELOG.md
+      run: |
+        mkdir -p tmp
+        echo $RELEASE_NOTE > tmp/CHANGELOG.head.md
+        git show ${{ github.base_ref }}:./CHANGELOG.md > tmp/CHANGELOG.base.md
+        cat -s tmp/CHANGELOG.head.md tmp/CHANGELOG.base.md > CHANGELOG.md
+
+        echo $RELEASE_NOTE
+        cat tmp/CHANGELOG.head.md
+      env:
+        RELEASE_TAG: ${{ steps.release-meta.outputs.tag }}
+        RELEASE_NOTE: ${{ steps.release-meta.outputs.note }}
