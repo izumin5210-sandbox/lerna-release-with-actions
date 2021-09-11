@@ -34,7 +34,7 @@ jobs:
             repo: context.repo.repo,
             pull_number: context.issue.number,
             title: process.env.RELEASE_TAG,
-            body: process.env.RELEASE_NOTE.replace(/\\n/g, '\n'),
+            body: process.env.RELEASE_NOTE,
           })
       env:
         RELEASE_NOTE: ${{ steps.release-meta.outputs.note }}

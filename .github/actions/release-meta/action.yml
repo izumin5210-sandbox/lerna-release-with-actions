@@ -23,12 +23,15 @@ runs:
       run: |
         version=$(node --print 'require("./lerna.json").version')
         note=$(yarn -s lerna-changelog --next-version ${version})
+        echo $version
+        echo $note
 
         echo "::set-output name=version::${version}"
         echo "::set-output name=tag::v${version}"
-        echo "::set-output name=note::${note//$'\n'/\\n}"
 
-        echo $version
-        echo $note
+        note="${note//'%'/'%25'}"
+        note="${note//$'\n'/'%0A'}"
+        note="${note//$'\r'/'%0D'}"
+        echo "::set-output name=note::${note}"
       env:
         GITHUB_AUTH: ${{ inputs.github-token }}
