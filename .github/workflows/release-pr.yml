@@ -35,7 +35,6 @@ jobs:
             pull_number: context.issue.number,
             title: `Release ${process.env.RELEASE_TAG}`,
             body: process.env.RELEASE_NOTE,
-            draft: false,
           })
       env:
         RELEASE_NOTE: ${{ steps.release-meta.outputs.note }}
