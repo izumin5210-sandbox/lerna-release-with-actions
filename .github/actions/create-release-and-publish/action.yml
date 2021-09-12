@@ -1,0 +1,52 @@
+name: create-release-and-publish
+description: Create GitHub Release and publish somewhere
+inputs:
+  run-publish:
+    description: 'Script for publishing'
+    required: true
+  get-version:
+    description: 'Script for extracting current version'
+    default: |
+      node --print 'require("./package.json").version')
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - uses: ./.github/actions/release-meta
+      id: release-meta
+      with:
+        get-version: ${{ inputs.get-version }}
+
+    - name: Create GitHub Release
+      uses: actions/github-script@v4
+      with:
+        script: |
+          github.repos.createRelease({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            name: process.env.RELEASE_TAG,
+            tag_name: process.env.RELEASE_TAG,
+            body: process.env.RELEASE_NOTE,
+            prerelease: !/v\d+\.\d+\.\d+$/.test(process.env.RELEASE_TAG),
+            target_commitish: context.sha,
+          })
+      env:
+        RELEASE_NOTE: ${{ steps.release-meta.outputs.note }}
+        RELEASE_TAG: ${{ steps.release-meta.outputs.tag }}
+
+    - name: Publish to npm
+      run: ${{ inputs.run-publish }}
+
+    - name: Comment to PR
+      uses: actions/github-script@v4
+      with:
+        script: |
+          const url = `https://github.com/${context.repo.owner}/${context.repo.repo}/releases/tag/${process.env.RELEASE_TAG}`
+          github.issues.createComment({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number: context.issue.number,
+            body: `[${process.env.RELEASE_TAG}](${url}) is released 🚀`,
+          })
+      env:
+        RELEASE_TAG: ${{ steps.release-meta.outputs.tag }}

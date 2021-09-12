@@ -2,8 +2,13 @@ name: release-meta
 description: Output release metadata
 inputs:
   github-token:
-    description: 'GitHub Access Token for downloading kube'
+    description: 'GitHub Access Token for generating changelog'
     default: ${{ github.token }}
+    required: true
+  get-version:
+    description: 'Script for extracting current version'
+    default: |
+      node --print 'require("./package.json").version')
     required: true
 outputs:
   version:
@@ -21,7 +26,7 @@ runs:
     - id: meta
       shell: bash
       run: |
-        version=$(node --print 'require("./lerna.json").version')
+        version=$(${{ inputs.get-version }})
         note=$(yarn -s lerna-changelog --next-version ${version})
 
         echo "::set-output name=version::${version}"
