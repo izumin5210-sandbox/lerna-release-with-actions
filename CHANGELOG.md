@@ -1,4 +1,16 @@
 
+## 0.1.6-alpha.0 (2021-09-12)
+
+#### Bug Fixes
+* [#25](https://github.com/izumin5210-sandbox/lerna-release-with-actions/pull/25) Fix prerelease condition ([@izumin5210](https://github.com/izumin5210))
+* [#22](https://github.com/izumin5210-sandbox/lerna-release-with-actions/pull/22) Remove unused param ([@izumin5210](https://github.com/izumin5210))
+
+#### Enhancements
+* [#21](https://github.com/izumin5210-sandbox/lerna-release-with-actions/pull/21) Comment release url to PR ([@izumin5210](https://github.com/izumin5210))
+
+#### Committers: 1
+- Masayuki Izumi ([@izumin5210](https://github.com/izumin5210))
+
 ## 0.1.5 (2021-09-12)
 
 #### Bug Fixes
