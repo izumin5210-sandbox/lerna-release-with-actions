@@ -32,6 +32,7 @@ runs:
         RELEASE_TAG: ${{ steps.release-meta.outputs.tag }}
 
     - name: Publish to npm
+      shell: bash
       run: ${{ inputs.run-publish }}
 
     - name: Comment to PR
