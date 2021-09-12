@@ -23,8 +23,6 @@ runs:
       run: |
         version=$(node --print 'require("./lerna.json").version')
         note=$(yarn -s lerna-changelog --next-version ${version})
-        echo $version
-        echo $note
 
         echo "::set-output name=version::${version}"
         echo "::set-output name=tag::v${version}"
