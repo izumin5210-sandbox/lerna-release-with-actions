@@ -1,4 +1,17 @@
 
+## 0.2.1-alpha.0 (2021-09-12)
+
+#### Bug Fixes
+* [#31](https://github.com/izumin5210-sandbox/lerna-release-with-actions/pull/31) Specify shell ([@izumin5210](https://github.com/izumin5210))
+
+#### Enhancements
+* [#29](https://github.com/izumin5210-sandbox/lerna-release-with-actions/pull/29) Define release flow as custom actions ([@izumin5210](https://github.com/izumin5210))
+* [#28](https://github.com/izumin5210-sandbox/lerna-release-with-actions/pull/28) Update CHANGELOG on release PR ([@izumin5210](https://github.com/izumin5210))
+* [#27](https://github.com/izumin5210-sandbox/lerna-release-with-actions/pull/27) Improve comment body ([@izumin5210](https://github.com/izumin5210))
+
+#### Committers: 1
+- Masayuki Izumi ([@izumin5210](https://github.com/izumin5210))
+
 ## 0.1.6-alpha.0 (2021-09-12)
 
 #### Bug Fixes
