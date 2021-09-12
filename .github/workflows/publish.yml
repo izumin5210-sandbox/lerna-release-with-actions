@@ -69,7 +69,7 @@ jobs:
             name: process.env.RELEASE_TAG,
             tag_name: process.env.RELEASE_TAG,
             body: process.env.RELEASE_NOTE,
-            prerelease: /v\d+\.\d+\.\d+-.+/.test(process.env.RELEASE_TAG),
+            prerelease: !/v\d+\.\d+\.\d+$/.test(process.env.RELEASE_TAG),
           })
       env:
         RELEASE_NOTE: ${{ steps.release-meta.outputs.note }}
