@@ -1,6 +1,10 @@
 name: generate-changelog
 description: Generate and commit the CHANGELOG, and update the body of the Pull Request.
 inputs:
+  github-token:
+    description: 'GitHub Access Token for generating changelog'
+    default: ${{ github.token }}
+    required: true
   get-version:
     description: 'Script for extracting current version'
     default: |
@@ -36,7 +40,7 @@ runs:
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
         git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ inputs.github-token }}
 
     - name: Update CHANGELOG.md
       shell: bash
