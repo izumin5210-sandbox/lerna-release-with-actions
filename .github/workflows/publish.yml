@@ -38,20 +38,6 @@ jobs:
     - uses: ./.github/actions/release-meta
       id: release-meta
 
-    - name: Update CHANGELOG.md
-      run: |
-        mkdir -p tmp
-        echo "${RELEASE_NOTE}" > tmp/CHANGELOG.head.md
-        git show ${{ github.base_ref }}:./CHANGELOG.md > tmp/CHANGELOG.base.md
-        cat -s tmp/CHANGELOG.head.md tmp/CHANGELOG.base.md > CHANGELOG.md
-
-        git add CHANGELOG.md
-        git commit -m "Update CHANGELOG for ${RELEASE_TAG}"
-        git push
-      env:
-        RELEASE_TAG: ${{ steps.release-meta.outputs.tag }}
-        RELEASE_NOTE: ${{ steps.release-meta.outputs.note }}
-
     - name: Create git tag
       run: |
         git tag $RELEASE_TAG
