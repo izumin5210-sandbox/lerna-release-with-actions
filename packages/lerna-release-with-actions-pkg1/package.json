@@ -1,6 +1,6 @@
 {
   "name": "@izumin5210-sandbox/lerna-release-with-actions-pkg1",
-  "version": "0.1.6-alpha.0",
+  "version": "0.2.0",
   "description": "Test package",
   "author": "izumin5210 <m@izum.in>",
   "homepage": "https://github.com/izumin5210-sandbox/lerna-release-with-actions/tree/master/packages/lerna-release-with-actions-pkg1",
