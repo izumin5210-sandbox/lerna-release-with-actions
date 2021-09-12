@@ -2,7 +2,7 @@ name: release-meta
 description: Output release metadata
 inputs:
   github-token:
-    description: 'GitHub Access Token for downloading kube'
+    description: 'GitHub Access Token for generating changelog'
     default: ${{ github.token }}
     required: true
 outputs:
