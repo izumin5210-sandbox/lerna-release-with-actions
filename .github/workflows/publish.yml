@@ -29,8 +29,11 @@ jobs:
     - run: yarn --frozen-lockfile
 
     - uses: ./.github/actions/create-release-and-publish
-      run-publish: |
-        yarn lerna publish from-package --yes
+      with:
+        run-publish: |
+          yarn lerna publish from-package --yes
+        get-version: |
+          node --print 'require("./lerna.json").version'
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,10 +1,18 @@
 name: generate-changelog
 description: Generate and commit the CHANGELOG, and update the body of the Pull Request.
+inputs:
+  get-version:
+    description: 'Script for extracting current version'
+    default: |
+      node --print 'require("./package.json").version')
+    required: true
 runs:
   using: "composite"
   steps:
     - uses: ./.github/actions/release-meta
       id: release-meta
+      with:
+        get-version: ${{ inputs.get-version }}
 
     - name: Create GitHub Release
       uses: actions/github-script@v4
